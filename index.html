@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Лимиты">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -59,7 +59,7 @@
   --tick-off:rgba(142,142,147,.85);
   --shell:#1C1C1E; --scheme:dark;
 }
-html{color-scheme:var(--scheme)}
+html{color-scheme:var(--scheme);touch-action:pan-x pan-y}   /* без пинч- и дабл-тап-зума */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{
   font-family:var(--sans);font-size:17px;color:var(--label);background:var(--shell);
@@ -98,13 +98,19 @@ button{-webkit-user-select:none;user-select:none}
 .navbar h1{font-size:34px;line-height:41px;font-weight:700;letter-spacing:.37px;margin-right:auto}
 .iconbtn{width:34px;height:34px;flex:none;border:none;border-radius:17px;background:var(--fill3);
   color:var(--blue);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.datefield{font-size:16px;color:var(--label);background:var(--fill3);border:none;border-radius:8px;padding:6px 10px;min-height:34px}
+/* Safari рисует у input[type=date] собственную рамку со своим скруглением —
+   сбрасываем нативный вид, иначе углы двоятся поверх нашего фона */
+.datefield{-webkit-appearance:none;appearance:none;
+  font-size:16px;line-height:20px;color:var(--label);background:var(--fill3);
+  border:none;border-radius:9px;padding:7px 10px;height:34px}
+.datefield::-webkit-date-and-time-value{text-align:left;margin:0}
+.datefield::-webkit-calendar-picker-indicator{opacity:.45;cursor:pointer}
 
 /* заголовок группы — выровнен по тексту внутри карточки */
 .secthead{display:flex;align-items:center;justify-content:space-between;gap:10px;
   flex:none;padding:0 16px;margin:16px 0 7px;min-height:20px}
 .secthead>span{font-size:13px;line-height:18px;color:var(--label2);text-transform:uppercase;letter-spacing:.06em}
-.secthead .till{color:var(--red);flex:none}
+.secthead em{font-style:normal;color:var(--red)}
 
 /* карточка inset grouped */
 .card{flex:none;background:var(--card);border-radius:12px;padding-left:16px}
@@ -140,7 +146,7 @@ button{-webkit-user-select:none;user-select:none}
 .unit{font-size:15px;font-weight:600;color:var(--label2)}
 
 /* будни и выходные — рядом */
-.split{display:flex;gap:12px;margin-top:13px;padding-top:12px;border-top:1px solid var(--separator)}
+.split{display:flex;gap:12px;margin-top:12px}
 .split:empty{display:none}
 .split div{flex:1;min-width:0}
 .split i{display:block;font-style:normal;font-size:13px;color:var(--label2)}
@@ -148,9 +154,11 @@ button{-webkit-user-select:none;user-select:none}
   font-variant-numeric:tabular-nums;margin-top:2px}
 .split .none{opacity:.4}
 
-.warn{display:none;font-size:13px;line-height:1.35;color:var(--red);background:var(--red-soft);
-  border-radius:10px;padding:8px 10px;margin-top:12px}
-.warn.on{display:block}
+/* строка «подпись + контрол» внутри карточки */
+.ctrlrow{display:flex;align-items:center;margin-top:13px;padding-top:12px;border-top:1px solid var(--separator)}
+.ctrlrow .seg{flex:1;min-width:0}
+.hide{display:none}
+
 
 /* календарная лента и список выплат — одна карточка */
 .ribbon{padding:14px 16px 11px 0}
@@ -191,28 +199,20 @@ button{-webkit-user-select:none;user-select:none}
     </div>
 
     <div class="secthead">
-      <span id="moneyLabel">Осталось денег</span>
-      <span class="till" id="daysLabel"></span>
+      <span id="moneyLabel">Остаток <em id="daysLabel"></em></span>
+      <div class="curseg" id="curIn" role="group" aria-label="Валюта ввода">
+        <button type="button" class="curbtn on" data-cur="BYN">BYN</button>
+        <button type="button" class="curbtn" data-cur="USD" disabled>USD</button>
+      </div>
     </div>
     <div class="card">
       <div class="inputrow">
         <input id="money" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off" aria-labelledby="moneyLabel">
-        <div class="curseg" id="curIn" role="group" aria-label="Валюта ввода">
-          <button type="button" class="curbtn on" data-cur="BYN">BYN</button>
-          <button type="button" class="curbtn" data-cur="USD" disabled>USD</button>
-        </div>
       </div>
     </div>
 
-    <div class="secthead"><span>Будний : выходной</span></div>
-    <div class="seg" id="seg" role="group" aria-label="Соотношение будний день к выходному">
-      <button type="button" class="segbtn" data-k="1">1 : 1</button>
-      <button type="button" class="segbtn on" data-k="1.5">2 : 3</button>
-      <button type="button" class="segbtn" data-k="2">1 : 2</button>
-    </div>
-
     <div class="secthead">
-      <span id="bandLabel">На сегодня</span>
+      <span>Лимит дня</span>
       <div class="curseg" id="curOut" role="group" aria-label="Валюта вывода">
         <button type="button" class="curbtn on" data-cur="BYN">BYN</button>
         <button type="button" class="curbtn" data-cur="USD" disabled>USD</button>
@@ -223,8 +223,14 @@ button{-webkit-user-select:none;user-select:none}
         <span class="amount idle" id="perDay">Нет данных</span>
         <span class="unit" id="unitLabel"></span>
       </div>
+      <div class="ctrlrow" id="ratioRow">
+        <div class="seg" id="seg" role="group" aria-label="Соотношение будний день к выходному">
+          <button type="button" class="segbtn" data-k="1">1 : 1</button>
+          <button type="button" class="segbtn on" data-k="1.5">2 : 3</button>
+          <button type="button" class="segbtn" data-k="2">1 : 2</button>
+        </div>
+      </div>
       <div class="split" id="splitLine"></div>
-      <div class="warn" id="warnLine"></div>
     </div>
 
     <div class="grow"></div>
@@ -298,11 +304,17 @@ button{-webkit-user-select:none;user-select:none}
 
   var $=function(id){return document.getElementById(id);};
   var elDate=$('dateInput'),elMoney=$('money'),elPerDay=$('perDay'),elUnit=$('unitLabel'),
-      elBandLabel=$('bandLabel'),elSplit=$('splitLine'),
-      elWarn=$('warnLine'),elDays=$('daysLabel'),
+      elSplit=$('splitLine'),elRatio=$('ratioRow'),
+      elDays=$('daysLabel'),
       elTicks=$('ticks'),elTickLabels=$('tickLabels'),elSeg=$('seg'),elCurIn=$('curIn'),
       elCurOut=$('curOut'),elList=$('list'),elRate=$('rateLine'),
       elScreen=$('screen'),elFit=$('fit'),elTheme=$('themeBtn');
+
+  /* Safari на iOS игнорирует user-scalable=no, поэтому пинч гасим сами.
+     touchend не трогаем — иначе ломаются быстрые повторные нажатия по кнопкам */
+  ['gesturestart','gesturechange','gestureend'].forEach(function(t){
+    document.addEventListener(t,function(e){ e.preventDefault(); },{passive:false});
+  });
 
   /* ---------- тема ---------- */
   var root=document.documentElement;
@@ -492,24 +504,39 @@ button{-webkit-user-select:none;user-select:none}
     var money = typed===null ? null
               : (inCur==='USD'&&usdRate ? typed*usdRate : typed);   // всё считаем в BYN
     var todayOff=kinds[0];
-    elBandLabel.textContent='На сегодня · '+(todayOff?'выходной':'будний день');
-
-    elWarn.classList.remove('on');
 
     // дни до зарплаты — рядом с «осталось денег»
-    elDays.textContent='до зп '+days+' '+plural(days,'день','дня','дней');
+    elDays.textContent='('+days+' '+plural(days,'день','дня','дней')+')';
 
     if(money===null){
       elPerDay.classList.add('idle');
       elPerDay.textContent='Нет данных';
       elUnit.textContent=''; elSplit.innerHTML='';
+      elRatio.classList.add('hide');          // нечего делить — контрол не нужен
     } else {
-      var pot=money+avansTotal;
-      var unit=pot/(nWork+weekendK*nOff);
+      // усреднённая ставка по всему периоду, с учётом будущего аванса
+      var weight=nWork+weekendK*nOff;
+      var budget=money+avansTotal;
+
+      // но будущий аванс нельзя тратить заранее: если на руках не хватает
+      // дожить до него по усреднённой ставке, до аванса считаем только по тому,
+      // что реально есть, а аванс распределится сам, когда придёт
+      if(avansDays.length){
+        var idx=avansDays[0],wSeg=0,segWork=0,segOff=0;
+        for(var q=0;q<idx;q++){
+          if(kinds[q]){ wSeg+=weekendK; segOff++; } else { wSeg+=1; segWork++; }
+        }
+        if(budget/weight*wSeg>money+0.005){
+          budget=money; weight=wSeg; nWork=segWork; nOff=segOff;
+        }
+      }
+
+      var unit=budget/weight;
       var workSum=unit,offSum=unit*weekendK;
       var mine=todayOff?offSum:workSum;
 
       elPerDay.classList.remove('idle');
+      elRatio.classList.remove('hide');
       var shown=(outCur==='USD'&&usdRate)?mine/usdRate:mine;
       elPerDay.textContent=nf.format(shown);
       elUnit.textContent=outCur;
@@ -522,16 +549,6 @@ button{-webkit-user-select:none;user-select:none}
         '<div'+(nWork?'':' class="none"')+'><i>Будни</i><b>'+(nWork?nf.format(conv(workSum)):'—')+'</b></div>'+
         '<div'+(nOff?'':' class="none"')+'><i>Выходные</i><b>'+(nOff?nf.format(conv(offSum)):'—')+'</b></div>';
 
-      // хватит ли денег дожить до аванса
-      if(avansDays.length){
-        var idx=avansDays[0],need=0;
-        for(var q=0;q<idx;q++) need+=kinds[q]?offSum:workSum;
-        if(need>money+0.005){
-          elWarn.textContent='До аванса нужно '+nf.format(need)+' BYN, а на руках '+nf.format(money)+
-                             '. Первые '+idx+' '+plural(idx,'день','дня','дней')+' придётся ужаться.';
-          elWarn.classList.add('on');
-        }
-      }
     }
 
     // календарь: от прошлой зарплаты до следующей, включая обе
