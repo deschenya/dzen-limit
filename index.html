@@ -6,142 +6,197 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Лимиты">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#E9E5DB">
+<meta name="theme-color" content="#F2F2F7" id="themeColor">
 <title>Лимиты</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://api.nbrb.by">
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script>
+/* тема ставится до отрисовки — без вспышки светлого */
+(function(){
+  var t=null;
+  try{ t=localStorage.getItem('theme'); }catch(e){}
+  if(t!=='dark'&&t!=='light') t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
+</script>
 <style>
+/* системные цвета iOS */
 :root{
-  --paper:#E9E5DB; --card:#F4F1E9; --ink:#17150F;
-  --graphite:#7A7264; --rule:#D5CFC0; --currant:#C6122E;
-  --currant-deep:#8E0A20; --currant-light:#E0697F;
-  --display:'Oswald','Arial Narrow',system-ui,sans-serif;
-  --body:'Manrope',system-ui,-apple-system,sans-serif;
-  --mono:'JetBrains Mono',ui-monospace,'SF Mono',monospace;
+  --bg:#F2F2F7;              /* systemGroupedBackground */
+  --card:#FFFFFF;            /* secondarySystemGroupedBackground */
+  --label:#000000;
+  --label2:rgba(60,60,67,.6);
+  --label3:rgba(60,60,67,.3);
+  --separator:rgba(60,60,67,.29);
+  --fill3:rgba(118,118,128,.12);   /* tertiarySystemFill */
+  --seg-on:#FFFFFF;
+  --seg-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04);
+  --red:#FF3B30;                   /* systemRed */
+  --red-soft:rgba(255,59,48,.12);
+  --blue:#007AFF;                  /* systemBlue — цвет действий */
+  --tick-past:rgba(120,120,128,.12);
+  --tick-work:rgba(120,120,128,.30);
+  --tick-off:rgba(120,120,128,.58);
+  --shell:#C7C7CC;
+  --scheme:light;
+  --sans:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;
+  --num:ui-rounded,'SF Pro Rounded',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
 }
+:root[data-theme="dark"]{
+  --bg:#000000; --card:#1C1C1E;
+  --label:#FFFFFF;
+  --label2:rgba(235,235,245,.6);
+  --label3:rgba(235,235,245,.3);
+  --separator:rgba(84,84,88,.65);
+  --fill3:rgba(118,118,128,.24);
+  --seg-on:#636366;
+  --seg-shadow:0 3px 8px rgba(0,0,0,.3);
+  --red:#FF453A; --red-soft:rgba(255,69,58,.18); --blue:#0A84FF;
+  --tick-past:rgba(120,120,128,.20);
+  --tick-work:rgba(120,120,128,.42);
+  --tick-off:rgba(142,142,147,.85);
+  --shell:#1C1C1E; --scheme:dark;
+}
+html{color-scheme:var(--scheme)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+body{
+  font-family:var(--sans);font-size:17px;color:var(--label);background:var(--shell);
+  height:100vh;height:100dvh;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  -webkit-text-size-adjust:100%;
+}
+button,input{font-family:inherit;touch-action:manipulation}
+button{-webkit-user-select:none;user-select:none}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
 
-/* iPhone 15 Pro: 393 × 852 */
+/* макет устройства — только для превью на широком экране */
 .phone{
-  width:393px;height:852px;background:var(--paper);
+  width:393px;height:852px;max-height:100%;background:var(--bg);
   border-radius:54px;overflow:hidden;position:relative;
-  box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 11px #0d0c0a,0 0 0 13px #45403a;
+  box-shadow:0 40px 90px rgba(0,0,0,.35),0 0 0 11px #0d0c0a,0 0 0 13px #45403a;
   display:flex;flex-direction:column;
 }
 @media (max-width:440px),(display-mode:standalone){
-  body{padding:0;background:var(--paper);align-items:stretch}
+  body{padding:0;background:var(--bg);align-items:stretch}
   .phone{width:100%;height:100dvh;border-radius:0;box-shadow:none}
 }
-.screen{flex:1;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 58px) 22px calc(env(safe-area-inset-bottom) + 30px);overflow:hidden}
-@media (max-width:440px){.screen{padding-top:calc(env(safe-area-inset-top) + 22px)}}
-
-.brand{display:flex;align-items:center;justify-content:space-between;flex:none}
-.mark{display:flex;align-items:center;gap:9px}
-.mark i{width:9px;height:9px;background:var(--currant);transform:rotate(45deg);border-radius:1px}
-.mark span{font-family:var(--display);font-weight:500;font-size:15px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink)}
-.datepick{font-family:var(--mono);font-size:11px;color:var(--graphite);background:none;border:1px solid var(--rule);border-radius:8px;padding:6px 8px;color-scheme:light}
-.datepick:focus-visible{outline:2px solid var(--currant);outline-offset:2px}
-
-.label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite);display:block;margin-bottom:7px}
-
-.field{margin-top:22px;flex:none}
-.inputwrap{display:flex;align-items:flex-end;gap:10px;border-bottom:2px solid var(--ink);padding-bottom:8px}
-.inputwrap input{flex:1;min-width:0;border:none;background:none;font-family:var(--display);font-weight:500;font-size:40px;color:var(--ink)}
-.inputwrap input::placeholder{color:#C2BAA8}
-.inputwrap input:focus{outline:none}
-.cur{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--graphite)}
-
-.seg{display:flex;gap:6px;flex:none}
-.segbtn{flex:1;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.04em;padding:11px 0;border:1px solid var(--rule);border-radius:7px;background:none;color:var(--graphite);cursor:pointer}
-.segbtn.on{background:var(--ink);border-color:var(--ink);color:var(--card)}
-.segbtn:focus-visible{outline:2px solid var(--currant);outline-offset:2px}
-
-/* красный блок результата */
-.band{margin-top:20px;flex:none;background:var(--currant);color:var(--card);border-radius:4px;padding:16px 20px 17px;position:relative;overflow:hidden}
-.band::before{
-  content:"";position:absolute;inset:0 0 auto 0;height:7px;
-  background:
-    repeating-linear-gradient(45deg, rgba(244,241,233,.85) 0 1.5px, transparent 1.5px 7px),
-    repeating-linear-gradient(-45deg, rgba(244,241,233,.85) 0 1.5px, transparent 1.5px 7px);
+/* safe area + стандартные поля 16pt */
+.screen{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;
+  padding:calc(env(safe-area-inset-top) + 50px) calc(env(safe-area-inset-right) + 16px)
+          calc(env(safe-area-inset-bottom) + 16px) calc(env(safe-area-inset-left) + 16px)}
+@media (max-width:440px),(display-mode:standalone){
+  .screen{padding-top:calc(env(safe-area-inset-top) + 12px)}
 }
-.bandhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 4px}
-.bandhead .label{color:rgba(244,241,233,.75);margin:0}
-.curseg{display:flex;gap:4px;flex:none}
-.curbtn{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;padding:5px 8px;border:1px solid var(--rule);border-radius:5px;background:none;color:var(--graphite);cursor:pointer}
-.curbtn.on{background:var(--ink);border-color:var(--ink);color:var(--card)}
-.curbtn:disabled{opacity:.35;cursor:default}
-.curbtn:focus-visible{outline:2px solid var(--currant);outline-offset:2px}
-.band .curbtn{border-color:rgba(244,241,233,.45);color:rgba(244,241,233,.85)}
-.band .curbtn.on{background:var(--card);border-color:var(--card);color:var(--currant)}
-.band .curbtn:focus-visible{outline-color:var(--card)}
+/* контент всегда влезает в экран: при нехватке места скрипт его ужимает */
+.fit{flex:none;display:flex;flex-direction:column;transform-origin:top left;will-change:transform}
+.grow{flex:1 1 0;min-height:0}
 
-.amountrow{display:flex;align-items:baseline;gap:8px}
-.amount{font-family:var(--display);font-weight:600;font-size:54px;line-height:.98;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
-.amount.idle{font-size:23px;line-height:1.45;opacity:.75;font-weight:400}
-.unit{font-family:var(--mono);font-size:12px;font-weight:600;color:rgba(244,241,233,.7)}
-.equiv{font-family:var(--mono);font-size:11px;color:rgba(244,241,233,.8);margin-top:13px;padding-top:11px;border-top:1px solid rgba(244,241,233,.3);min-height:14px}
-.equiv:empty{min-height:0}
-.equiv.bare{margin-top:0;padding-top:0;border-top:none;min-height:0}
-.split{font-family:var(--mono);font-size:11px;color:rgba(244,241,233,.85);margin-top:7px}
-.pot{font-family:var(--mono);font-size:11px;color:rgba(244,241,233,.72);margin-top:7px}
-.warn{display:none;font-family:var(--mono);font-size:10px;line-height:1.4;color:var(--currant);background:var(--card);border-radius:3px;padding:5px 7px;margin-top:9px}
+/* navigation bar с Large Title */
+.navbar{display:flex;align-items:center;gap:10px;flex:none;margin-bottom:4px}
+.navbar h1{font-size:34px;line-height:41px;font-weight:700;letter-spacing:.37px;margin-right:auto}
+.iconbtn{width:34px;height:34px;flex:none;border:none;border-radius:17px;background:var(--fill3);
+  color:var(--blue);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.datefield{font-size:16px;color:var(--label);background:var(--fill3);border:none;border-radius:8px;padding:6px 10px;min-height:34px}
+
+/* заголовок группы — выровнен по тексту внутри карточки */
+.secthead{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  flex:none;padding:0 16px;margin:16px 0 7px;min-height:20px}
+.secthead>span{font-size:13px;line-height:18px;color:var(--label2);text-transform:uppercase;letter-spacing:.06em}
+.secthead .till{color:var(--red);flex:none}
+
+/* карточка inset grouped */
+.card{flex:none;background:var(--card);border-radius:12px;padding-left:16px}
+.card.pad{padding:14px 16px}
+
+/* поле суммы */
+.inputrow{display:flex;align-items:center;gap:12px;padding:8px 16px 8px 0;min-height:56px}
+.inputrow input{flex:1;min-width:0;border:none;background:none;color:var(--label);
+  font-family:var(--num);font-size:34px;font-weight:600;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+.inputrow input::placeholder{color:var(--label3)}
+.inputrow input:focus{outline:none}
+
+/* segmented control */
+.seg,.curseg{display:flex;flex:none;background:var(--fill3);border-radius:9px;padding:2px}
+.seg{margin-top:0}
+.segbtn,.curbtn{flex:1;border:none;background:none;color:var(--label);cursor:pointer;
+  border-radius:7px;font-size:13px;font-weight:500;padding:0;height:32px;white-space:nowrap}
+.segbtn.on,.curbtn.on{background:var(--seg-on);box-shadow:var(--seg-shadow);font-weight:600}
+.curseg{padding:2px}
+.curbtn{height:26px;font-size:12px;padding:0 10px;flex:none}
+.curbtn:disabled{color:var(--label3);cursor:default}
+/* HIG: минимальная зона нажатия 44pt — расширяем её, не увеличивая сам контрол */
+.iconbtn,.curbtn{position:relative}
+.iconbtn::after{content:"";position:absolute;left:-5px;right:-5px;top:-5px;bottom:-5px}
+.curbtn::after{content:"";position:absolute;left:0;right:0;top:-9px;bottom:-9px}
+.curbtn:disabled.on{color:var(--label2)}
+
+/* главное число */
+.amountrow{display:flex;align-items:baseline;gap:7px}
+.amount{font-family:var(--num);font-size:44px;line-height:1.06;font-weight:700;letter-spacing:-.6px;
+  color:var(--red);font-variant-numeric:tabular-nums}
+.amount.idle{font-family:var(--sans);font-size:20px;font-weight:400;letter-spacing:0;color:var(--label3)}
+.unit{font-size:15px;font-weight:600;color:var(--label2)}
+
+/* будни и выходные — рядом */
+.split{display:flex;gap:12px;margin-top:13px;padding-top:12px;border-top:1px solid var(--separator)}
+.split:empty{display:none}
+.split div{flex:1;min-width:0}
+.split i{display:block;font-style:normal;font-size:13px;color:var(--label2)}
+.split b{display:block;font-family:var(--num);font-size:22px;font-weight:600;letter-spacing:-.2px;
+  font-variant-numeric:tabular-nums;margin-top:2px}
+.split .none{opacity:.4}
+
+.warn{display:none;font-size:13px;line-height:1.35;color:var(--red);background:var(--red-soft);
+  border-radius:10px;padding:8px 10px;margin-top:12px}
 .warn.on{display:block}
-.bandfoot{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:9px;border-top:1px solid rgba(244,241,233,.3);font-family:var(--mono);font-size:11px;letter-spacing:.03em}
-.bandfoot b{font-weight:600}
 
-/* календарь: от зарплаты до зарплаты, полосы одной высоты */
-.ribbon{margin-top:18px;flex:none}
-.ticks{display:flex;align-items:stretch;gap:2px;height:26px}
-.tick{flex:1;min-width:0;border-radius:1px;background:var(--ink);opacity:.32}  /* будни */
-.tick.past{opacity:.11}                                                        /* прошедшие */
-.tick.off{opacity:.80}                                                         /* выходные */
-.tick.avans{background:var(--currant-light);opacity:1}
-.tick.pay{background:var(--currant-deep);opacity:1}
-.ticklab{position:relative;height:13px;margin-top:7px;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.03em}
-.ticklab span{position:absolute;top:0;white-space:nowrap}
-.ticklab .a{color:var(--currant-light)}
-.ticklab .p{color:var(--currant-deep)}
+/* календарная лента и список выплат — одна карточка */
+.ribbon{padding:14px 16px 11px 0}
+.ticks{display:flex;align-items:stretch;gap:2px;height:22px}
+.tick{flex:1;min-width:0;border-radius:2px;background:var(--tick-work)}
+.tick.past{background:var(--tick-past)}
+.tick.off{background:var(--tick-off)}
+.tick.mark{background:var(--red)}
+.ticklab{position:relative;height:13px;margin-top:7px;font-size:11px;font-weight:600}
+.ticklab span{position:absolute;top:0;white-space:nowrap;color:var(--red);font-variant-numeric:tabular-nums}
 
-/* выплаты */
-.list{margin-top:auto;padding-top:12px;flex:none}
-.row{display:grid;grid-template-columns:58px 1fr auto;align-items:baseline;gap:10px;padding:10px 0;border-top:1px solid var(--rule)}
-.row .d{font-family:var(--display);font-size:19px;font-weight:500;color:var(--ink)}
-.row .t{font-size:13px;font-weight:500;color:var(--ink)}
-.row .t small{display:block;font-family:var(--mono);font-size:9.5px;color:var(--currant);letter-spacing:.04em;margin-top:2px}
-.row .s{font-family:var(--mono);font-size:11px;color:var(--graphite);text-transform:uppercase;text-align:right}
-.row .s em{display:block;font-style:normal;color:var(--ink);font-weight:600;margin-bottom:2px}
+.row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;
+  min-height:44px;padding:7px 16px 7px 0;border-top:1px solid var(--separator)}
+.row .d{font-family:var(--num);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.row .t{font-size:17px;line-height:22px}
+.row .t small{display:block;font-size:12px;line-height:16px;color:var(--label2)}
+.row .s{font-size:15px;color:var(--label2);text-align:right;font-variant-numeric:tabular-nums}
+.row .s em{font-style:normal;font-weight:600;color:var(--label);margin-right:6px}
 
-/* курс */
-.rate{margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--graphite);display:flex;justify-content:space-between;align-items:center;gap:8px;flex:none}
-.rate a{color:var(--graphite);text-decoration:none;border-bottom:1px solid var(--rule)}
-.rate button{font:inherit;color:var(--currant);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;flex:none}
-.rate input{
-  font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink);
-  width:62px;border:none;border-bottom:1.5px solid var(--currant);background:none;
-  padding:1px 2px;text-align:center;
-}
-.rate input:focus{outline:none;background:rgba(198,18,46,.07)}
+/* подвал группы */
+.rate{flex:none;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:0 16px;margin-top:8px;font-size:13px;line-height:18px;color:var(--label2)}
+.rate button{border:none;background:none;color:var(--blue);font-size:13px;cursor:pointer;flex:none;padding:0}
+.rate input{font-family:var(--num);font-size:16px;font-weight:600;color:var(--label);width:82px;
+  border:none;border-radius:6px;background:var(--fill3);padding:1px 6px;text-align:center}
+.rate input:focus{outline:none}
 </style>
 </head>
 <body>
 <div class="phone">
-  <div class="screen">
+  <div class="screen" id="screen">
+   <div class="fit" id="fit">
 
-    <div class="brand">
-      <div class="mark"><i></i><span>Лимиты</span></div>
-      <input type="date" class="datepick" id="dateInput" aria-label="Дата отсчёта">
+    <div class="navbar">
+      <h1>Лимиты</h1>
+      <button type="button" class="iconbtn" id="themeBtn" aria-label="Сменить тему"></button>
+      <input type="date" class="datefield" id="dateInput" aria-label="Дата отсчёта">
     </div>
 
-    <div class="field">
-      <label class="label" for="money">Осталось денег</label>
-      <div class="inputwrap">
-        <input id="money" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off">
+    <div class="secthead">
+      <span id="moneyLabel">Осталось денег</span>
+      <span class="till" id="daysLabel"></span>
+    </div>
+    <div class="card">
+      <div class="inputrow">
+        <input id="money" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off" aria-labelledby="moneyLabel">
         <div class="curseg" id="curIn" role="group" aria-label="Валюта ввода">
           <button type="button" class="curbtn on" data-cur="BYN">BYN</button>
           <button type="button" class="curbtn" data-cur="USD" disabled>USD</button>
@@ -149,45 +204,41 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
       </div>
     </div>
 
-    <div class="field">
-      <span class="label">Выходной дороже будня</span>
-      <div class="seg" id="seg" role="group" aria-label="Выходной дороже будня">
-        <button type="button" class="segbtn" data-k="1">поровну</button>
-        <button type="button" class="segbtn on" data-k="1.5">×1,5</button>
-        <button type="button" class="segbtn" data-k="2">×2</button>
-      </div>
+    <div class="secthead"><span>Будний : выходной</span></div>
+    <div class="seg" id="seg" role="group" aria-label="Соотношение будний день к выходному">
+      <button type="button" class="segbtn" data-k="1">1 : 1</button>
+      <button type="button" class="segbtn on" data-k="1.5">2 : 3</button>
+      <button type="button" class="segbtn" data-k="2">1 : 2</button>
     </div>
 
-    <div class="band">
-      <div class="bandhead">
-        <span class="label" id="bandLabel">На сегодня</span>
-        <div class="curseg" id="curOut" role="group" aria-label="Валюта вывода">
-          <button type="button" class="curbtn on" data-cur="BYN">BYN</button>
-          <button type="button" class="curbtn" data-cur="USD" disabled>USD</button>
-        </div>
+    <div class="secthead">
+      <span id="bandLabel">На сегодня</span>
+      <div class="curseg" id="curOut" role="group" aria-label="Валюта вывода">
+        <button type="button" class="curbtn on" data-cur="BYN">BYN</button>
+        <button type="button" class="curbtn" data-cur="USD" disabled>USD</button>
       </div>
+    </div>
+    <div class="card pad">
       <div class="amountrow">
         <span class="amount idle" id="perDay">Нет данных</span>
         <span class="unit" id="unitLabel"></span>
       </div>
-      <div class="equiv" id="equivLine"></div>
       <div class="split" id="splitLine"></div>
-      <div class="pot" id="potLine"></div>
       <div class="warn" id="warnLine"></div>
-      <div class="bandfoot">
-        <span id="untilLabel"></span>
-        <span id="daysLabel"></span>
+    </div>
+
+    <div class="grow"></div>
+
+    <div class="card">
+      <div class="ribbon">
+        <div class="ticks" id="ticks"></div>
+        <div class="ticklab" id="tickLabels"></div>
       </div>
+      <div id="list"></div>
     </div>
-
-    <div class="ribbon">
-      <div class="ticks" id="ticks"></div>
-      <div class="ticklab" id="tickLabels"></div>
-    </div>
-
-    <div class="list" id="list"></div>
 
     <div class="rate" id="rateLine"><span>Курс НБ РБ загружается…</span></div>
+   </div>
   </div>
 </div>
 
@@ -207,7 +258,7 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
   function isDayOff(d){var w=d.getDay();return w===0||w===6||isHoliday(d);}
   function shiftBack(d){var x=d,g=0;while(isDayOff(x)&&g++<20)x=addDays(x,-1);return x;}
 
-  // все выплаты после указанной даты, по возрастанию
+  // все выплаты СТРОГО после указанной даты, по возрастанию
   function payouts(from,count){
     var res=[],y=from.getFullYear(),mo=from.getMonth();
     var kinds=[[10,'Зарплата'],[24,'Аванс']];
@@ -238,19 +289,103 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
     return res;
   }
 
-  var MON=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
   var WD=['вс','пн','вт','ср','чт','пт','сб'];
   var nf=new Intl.NumberFormat('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
   var nf4=new Intl.NumberFormat('ru-RU',{minimumFractionDigits:4,maximumFractionDigits:4});
   function pad(n){return (n<10?'0':'')+n;}
+  function dm(d){return pad(d.getDate())+'.'+pad(d.getMonth()+1);}
   function plural(n,a,b,c){var x=n%10,y=n%100;if(x===1&&y!==11)return a;if(x>=2&&x<=4&&(y<10||y>=20))return b;return c;}
 
   var $=function(id){return document.getElementById(id);};
   var elDate=$('dateInput'),elMoney=$('money'),elPerDay=$('perDay'),elUnit=$('unitLabel'),
-      elEquiv=$('equivLine'),elBandLabel=$('bandLabel'),elSplit=$('splitLine'),elPot=$('potLine'),
-      elWarn=$('warnLine'),elUntil=$('untilLabel'),elDays=$('daysLabel'),elTicks=$('ticks'),
-      elTickLabels=$('tickLabels'),elSeg=$('seg'),elCurIn=$('curIn'),elCurOut=$('curOut'),
-      elList=$('list'),elRate=$('rateLine');
+      elBandLabel=$('bandLabel'),elSplit=$('splitLine'),
+      elWarn=$('warnLine'),elDays=$('daysLabel'),
+      elTicks=$('ticks'),elTickLabels=$('tickLabels'),elSeg=$('seg'),elCurIn=$('curIn'),
+      elCurOut=$('curOut'),elList=$('list'),elRate=$('rateLine'),
+      elScreen=$('screen'),elFit=$('fit'),elTheme=$('themeBtn');
+
+  /* ---------- тема ---------- */
+  var root=document.documentElement;
+  var ICON_MOON='<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">'+
+    '<path fill="currentColor" d="M20.7 14.6A8.6 8.6 0 0 1 9.4 3.3a8.9 8.9 0 1 0 11.3 11.3z"/></svg>';
+  var ICON_SUN='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">'+
+    '<circle cx="12" cy="12" r="4.4" fill="currentColor"/>'+
+    '<g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">'+
+    '<path d="M12 2.4v2.3M12 19.3v2.3M2.4 12h2.3M19.3 12h2.3M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></g></svg>';
+  function paintTheme(){
+    var dark=root.getAttribute('data-theme')==='dark';
+    elTheme.innerHTML=dark?ICON_SUN:ICON_MOON;
+    var meta=$('themeColor');
+    if(meta) meta.setAttribute('content',dark?'#000000':'#F2F2F7');
+  }
+  elTheme.addEventListener('click',function(){
+    var next=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{ localStorage.setItem('theme',next); }catch(e){}
+    paintTheme();
+    autofit();
+  });
+  paintTheme();
+
+  /* ---------- вписывание в экран ----------
+     контент никогда не скроллится: если не влезает по высоте — весь блок
+     ужимается через transform, а его ширина компенсируется, чтобы после
+     масштабирования он занимал экран целиком */
+  /* подписи выплат: держим внутри ленты и не даём наезжать друг на друга */
+  var lastMarks=[],lastTotal=0;
+  function layoutTickLabels(){
+    var W=elTickLabels.clientWidth;
+    if(!W||!lastTotal) return;
+    var GAP=6;
+    var pos=Array.prototype.map.call(elTickLabels.children,function(el,i){
+      var w=el.offsetWidth, c=(lastMarks[i].i+0.5)/lastTotal*W;
+      return {el:el,w:w,x:Math.max(0,Math.min(W-w,c-w/2))};
+    });
+    for(var i=1;i<pos.length;i++){
+      var minX=pos[i-1].x+pos[i-1].w+GAP;
+      if(pos[i].x<minX) pos[i].x=minX;
+    }
+    for(var j=pos.length-1;j>=0;j--){
+      var maxX=(j===pos.length-1?W:pos[j+1].x-GAP)-pos[j].w;
+      if(pos[j].x>maxX) pos[j].x=Math.max(0,maxX);
+    }
+    pos.forEach(function(p){ p.el.style.left=p.x+'px'; p.el.style.right='auto'; });
+  }
+
+  var MINK=0.35;
+  function autofit(){
+    elFit.style.transform='none';
+    elFit.style.width='100%';
+    elFit.style.height='auto';
+
+    var cs=getComputedStyle(elScreen);
+    var availH=elScreen.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+    var availW=elScreen.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    if(!(availH>0&&availW>0)) return;
+
+    // при другой ширине текст перетекает и высота меняется — сходимся за пару итераций
+    var k=1;
+    for(var i=0;i<4;i++){
+      var want=Math.max(MINK,Math.min(1,availH/elFit.scrollHeight));
+      var done=Math.abs(want-k)<0.005;
+      k=want;
+      if(k>=1){ elFit.style.width='100%'; break; }
+      elFit.style.width=(availW/k)+'px';
+      if(done) break;
+    }
+    // страховка: при выбранном масштабе контент обязан помещаться в рамку
+    var h=elFit.scrollHeight;
+    if(h*k>availH+0.5){
+      k=Math.max(MINK,availH/h);
+      elFit.style.width=(availW/k)+'px';
+    }
+
+    elFit.style.width=k<1?(availW/k)+'px':'100%';
+    elFit.style.height=(availH/k)+'px';
+    elFit.style.transform=k<1?'scale('+k+')':'none';
+
+    layoutTickLabels();   // ширина ленты изменилась — пересчитать подписи
+  }
 
   var today=midnight(new Date());
   elDate.value=today.getFullYear()+'-'+pad(today.getMonth()+1)+'-'+pad(today.getDate());
@@ -263,7 +398,7 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
   var rateManual=false;
 
   function parseMoney(s){
-    var v=String(s).replace(/[\s\u00A0]/g,'').replace(',','.').replace(/[^\d.]/g,'');
+    var v=String(s).replace(/[\s ]/g,'').replace(',','.').replace(/[^\d.]/g,'');
     var n=parseFloat(v);
     return isFinite(n)&&n>=0?n:null;
   }
@@ -286,7 +421,7 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
     usdOn(true);
     elRate.innerHTML=
       '<span>'+(rateManual?'Курс вручную':'Курс НБ РБ')+' · 1 USD = '+nf4.format(usdRate)+' BYN'+
-      (rateDate?' · '+pad(rateDate.getDate())+'.'+pad(rateDate.getMonth()+1):'')+'</span>'+
+      (rateDate?' · '+dm(rateDate):'')+'</span>'+
       '<button type="button" id="rateEdit">'+(rateManual?'обновить':'изменить')+'</button>';
     $('rateEdit').addEventListener('click', rateManual ? loadRate : rateForm);
     render();
@@ -295,7 +430,7 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
   function rateForm(msg){
     usdOn(!!usdRate);
     elRate.innerHTML=
-      '<span>'+(msg||'Курс вручную')+' · 1 USD = <input id="rateInput" type="text" inputmode="decimal" '+
+      '<span>'+(typeof msg==='string'?msg:'Курс вручную')+' · 1 USD = <input id="rateInput" type="text" inputmode="decimal" '+
       'placeholder="0,0000" value="'+(usdRate?nf4.format(usdRate):'')+'" aria-label="Курс доллара"> BYN</span>'+
       '<button type="button" id="rateRetry">загрузить</button>';
     var inp=$('rateInput');
@@ -306,12 +441,13 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
       render();
     });
     $('rateRetry').addEventListener('click',loadRate);
-    inp.focus();
+    render();
   }
 
   /* официальный курс НБ РБ — тот же, что публикует myfin.by */
   function loadRate(){
     elRate.innerHTML='<span>Курс НБ РБ загружается…</span>';
+    autofit();
     fetch('https://api.nbrb.by/exrates/rates/USD?parammode=2',{cache:'no-store'})
       .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
       .then(function(d){
@@ -322,7 +458,6 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
       })
       .catch(function(){
         rateForm('Курс не загрузился — впишите');
-        render();
       });
   }
 
@@ -333,12 +468,13 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
 
     var next=payouts(base,6);
 
-    // период считаем до ближайшей ЗАРПЛАТЫ: аванс — известные 300, он пополняет остаток
+    // период считаем до ближайшей ЗАРПЛАТЫ
     var salary=null;
     for(var s=0;s<next.length;s++) if(next[s].kind==='Зарплата'){ salary=next[s]; break; }
     var days=diffDays(base,salary.actual);
 
-    // авансы, попадающие внутрь периода
+    // аванс добавляем к сумме только пока он ВПЕРЕДИ:
+    // в день аванса деньги уже на руках — они учтены в «осталось денег», второй раз не плюсуем
     var avansDays=[];
     for(var v=0;v<next.length;v++){
       if(next[v].kind==='Аванс' && next[v].actual<salary.actual) avansDays.push(diffDays(base,next[v].actual));
@@ -360,11 +496,13 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
 
     elWarn.classList.remove('on');
 
+    // дни до зарплаты — рядом с «осталось денег»
+    elDays.textContent='до зп '+days+' '+plural(days,'день','дня','дней');
+
     if(money===null){
       elPerDay.classList.add('idle');
       elPerDay.textContent='Нет данных';
-      elUnit.textContent=''; elEquiv.textContent=''; elSplit.textContent=''; elPot.textContent='';
-      elEquiv.className='equiv bare';
+      elUnit.textContent=''; elSplit.innerHTML='';
     } else {
       var pot=money+avansTotal;
       var unit=pot/(nWork+weekendK*nOff);
@@ -372,25 +510,17 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
       var mine=todayOff?offSum:workSum;
 
       elPerDay.classList.remove('idle');
-      elEquiv.className='equiv';
       var shown=(outCur==='USD'&&usdRate)?mine/usdRate:mine;
       elPerDay.textContent=nf.format(shown);
       elUnit.textContent=outCur;
 
-      if(usdRate){
-        elEquiv.textContent = outCur==='USD'
-          ? '≈ '+nf.format(mine)+' BYN в день'
-          : '≈ '+nf.format(mine/usdRate)+' USD в день';
-      } else elEquiv.textContent='';
-
-      if(weekendK===1)   elSplit.textContent='все дни поровну · '+days+' × '+nf.format(unit);
-      else if(nOff===0)  elSplit.textContent='впереди только будни';
-      else if(nWork===0) elSplit.textContent='впереди только выходные';
-      else elSplit.textContent='будни '+nf.format(workSum)+' × '+nWork+'  ·  выходные '+nf.format(offSum)+' × '+nOff;
-
-      elPot.textContent = avansTotal
-        ? nf.format(money)+' + аванс '+nf.format(avansTotal)+' = '+nf.format(pot)+' BYN'
-        : nf.format(money)+' BYN до зарплаты';
+      // будни и выходные — рядом, только суммы, в валюте вывода.
+      // тип дня, которого в остатке периода нет, показываем прочерком:
+      // множитель на него не влияет, и число было бы выдуманным
+      var conv=function(x){ return (outCur==='USD'&&usdRate)?x/usdRate:x; };
+      elSplit.innerHTML=
+        '<div'+(nWork?'':' class="none"')+'><i>Будни</i><b>'+(nWork?nf.format(conv(workSum)):'—')+'</b></div>'+
+        '<div'+(nOff?'':' class="none"')+'><i>Выходные</i><b>'+(nOff?nf.format(conv(offSum)):'—')+'</b></div>';
 
       // хватит ли денег дожить до аванса
       if(avansDays.length){
@@ -403,9 +533,6 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
         }
       }
     }
-
-    elUntil.innerHTML='до '+pad(salary.actual.getDate())+'.'+pad(salary.actual.getMonth()+1)+' · <b>зарплата</b>';
-    elDays.textContent=days+' '+plural(days,'день','дня','дней');
 
     // календарь: от прошлой зарплаты до следующей, включая обе
     var cycleStart=prevSalary(base);
@@ -420,38 +547,37 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
       var cls='tick', isAvans=false;
       for(var c=0;c<cycleAvans.length;c++) if(diffDays(cycleAvans[c],day)===0) isAvans=true;
 
-      if(t===0||t===total-1){ cls+=' pay'; marks.push({i:t,d:day,type:'p'}); }
-      else if(isAvans){      cls+=' avans'; marks.push({i:t,d:day,type:'a'}); }
+      // аванс отмечаем красным так же, как зарплату
+      if(t===0||t===total-1||isAvans){ cls+=' mark'; marks.push({i:t,d:day}); }
       else if(diffDays(day,base)>0) cls+=' past';
       else if(isDayOff(day)) cls+=' off';
 
       var el=document.createElement('div');
       el.className=cls;
-      el.title=pad(day.getDate())+'.'+pad(day.getMonth()+1)+' '+WD[day.getDay()];
+      el.title=dm(day)+' '+WD[day.getDay()];
       elTicks.appendChild(el);
     }
 
     for(var mk=0;mk<marks.length;mk++){
-      var m=marks[mk],lab=document.createElement('span');
-      lab.className=m.type;
-      lab.textContent=pad(m.d.getDate())+'.'+pad(m.d.getMonth()+1);
-      var pct=(m.i+0.5)/total*100;
-      if(m.i===0){ lab.style.left='0'; }
-      else if(m.i===total-1){ lab.style.right='0'; }
-      else { lab.style.left=pct.toFixed(2)+'%'; lab.style.transform='translateX(-50%)'; }
+      var lab=document.createElement('span');
+      lab.textContent=dm(marks[mk].d)+' ('+WD[marks[mk].d.getDay()]+')';
       elTickLabels.appendChild(lab);
     }
+    lastMarks=marks; lastTotal=total;
+    layoutTickLabels();
 
     elList.innerHTML='';
     for(var j=0;j<3;j++){
       var p=next[j],moved=diffDays(p.nominal,p.actual)!==0;
       var row=document.createElement('div'); row.className='row';
       row.innerHTML=
-        '<span class="d">'+pad(p.actual.getDate())+'.'+pad(p.actual.getMonth()+1)+'</span>'+
-        '<span class="t">'+p.kind+(moved?'<small>перенос с '+pad(p.nominal.getDate())+'.'+pad(p.nominal.getMonth()+1)+'</small>':'')+'</span>'+
-        '<span class="s">'+(p.kind==='Аванс'?'<em>'+nf.format(AVANS)+'</em>':'')+WD[p.actual.getDay()]+'</span>';
+        '<span class="d">'+dm(p.actual)+'</span>'+
+        '<span class="t">'+p.kind+(moved?'<small>перенос с '+dm(p.nominal)+'</small>':'')+'</span>'+
+        '<span class="s">'+(p.kind==='Аванс'?'<em>+'+nf.format(AVANS)+'</em>':'')+WD[p.actual.getDay()]+'</span>';
       elList.appendChild(row);
     }
+
+    autofit();
   }
 
   elSeg.addEventListener('click',function(e){
@@ -478,6 +604,16 @@ body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;al
   });
   elMoney.addEventListener('input',render);
   elDate.addEventListener('change',render);
+
+  // при открытой клавиатуре высота вьюпорта скачет — не пересчитываем масштаб
+  function onResize(){
+    var a=document.activeElement;
+    if(a&&(a.tagName==='INPUT')) return;
+    autofit();
+  }
+  window.addEventListener('resize',onResize);
+  window.addEventListener('orientationchange',function(){setTimeout(autofit,150);});
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(autofit);
 
   render();
   loadRate();
