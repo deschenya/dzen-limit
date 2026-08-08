@@ -1,6 +1,6 @@
 {
-  "name": "Дневной лимит",
-  "short_name": "Лимит",
+  "name": "Лимиты",
+  "short_name": "Лимиты",
   "description": "Сколько можно тратить в день до ближайшей выплаты",
   "start_url": "./index.html",
   "scope": "./",
@@ -10,7 +10,15 @@
   "theme_color": "#E9E5DB",
   "lang": "ru",
   "icons": [
-    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }

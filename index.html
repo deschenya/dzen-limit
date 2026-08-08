@@ -4,180 +4,137 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Лимиты">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#E9E5DB">
-<title>Дневной лимит</title>
+<title>Лимиты</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap&subset=cyrillic,latin" rel="stylesheet">
+<link rel="preconnect" href="https://api.nbrb.by">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#E9E5DB;
-  --card:#F4F1E9;
-  --ink:#17150F;
-  --graphite:#7A7264;
-  --rule:#D5CFC0;
-  --currant:#C6122E;
-  --currant-deep:#9A0C23;
-
-  --display:'Oswald', 'Arial Narrow', system-ui, sans-serif;
-  --body:'Manrope', system-ui, -apple-system, sans-serif;
-  --mono:'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+  --paper:#E9E5DB; --card:#F4F1E9; --ink:#17150F;
+  --graphite:#7A7264; --rule:#D5CFC0; --currant:#C6122E;
+  --currant-deep:#8E0A20; --currant-light:#E0697F;
+  --display:'Oswald','Arial Narrow',system-ui,sans-serif;
+  --body:'Manrope',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono',monospace;
 }
-
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--body);background:#26231D;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 
-body{
-  font-family:var(--body);
-  background:#26231D;
-  min-height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;
-}
-
-/* ── iPhone 15 Pro: 393 × 852 ─────────────────────────── */
+/* iPhone 15 Pro: 393 × 852 */
 .phone{
-  width:393px;height:852px;
-  background:var(--paper);
-  border-radius:54px;
-  overflow:hidden;
-  position:relative;
-  box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 0 11px #0d0c0a, 0 0 0 13px #45403a;
+  width:393px;height:852px;background:var(--paper);
+  border-radius:54px;overflow:hidden;position:relative;
+  box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 11px #0d0c0a,0 0 0 13px #45403a;
   display:flex;flex-direction:column;
 }
-@media (max-width:440px), (display-mode:standalone){
+@media (max-width:440px),(display-mode:standalone){
   body{padding:0;background:var(--paper);align-items:stretch}
   .phone{width:100%;height:100dvh;border-radius:0;box-shadow:none}
 }
+.screen{flex:1;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 58px) 22px calc(env(safe-area-inset-bottom) + 30px);overflow:hidden}
+@media (max-width:440px){.screen{padding-top:calc(env(safe-area-inset-top) + 22px)}}
 
-.screen{
-  flex:1;display:flex;flex-direction:column;
-  padding:calc(env(safe-area-inset-top) + 58px) 22px calc(env(safe-area-inset-bottom) + 20px);
-  overflow:hidden;
-}
-@media (max-width:440px){ .screen{padding-top:calc(env(safe-area-inset-top) + 22px)} }
-
-/* ── ornament hairline (рушнік motif) ─────────────────── */
-.ornament{
-  height:9px;flex:none;
-  background:
-    repeating-linear-gradient(45deg,  var(--currant) 0 1.5px, transparent 1.5px 9px),
-    repeating-linear-gradient(-45deg, var(--currant) 0 1.5px, transparent 1.5px 9px);
-  opacity:.5;
-}
-
-/* ── header ───────────────────────────────────────────── */
-.head{display:flex;align-items:flex-end;justify-content:space-between;margin-top:18px}
-.eyebrow{
-  font-family:var(--mono);font-size:10px;font-weight:600;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--graphite);
-}
-.today{
-  font-family:var(--display);font-weight:500;font-size:26px;
-  letter-spacing:.01em;line-height:1.05;margin-top:3px;color:var(--ink);
-}
-.datepick{
-  font-family:var(--mono);font-size:11px;color:var(--graphite);
-  background:none;border:1px solid var(--rule);border-radius:8px;
-  padding:6px 8px;color-scheme:light;
-}
+.brand{display:flex;align-items:center;justify-content:space-between;flex:none}
+.mark{display:flex;align-items:center;gap:9px}
+.mark i{width:9px;height:9px;background:var(--currant);transform:rotate(45deg);border-radius:1px}
+.mark span{font-family:var(--display);font-weight:500;font-size:15px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink)}
+.datepick{font-family:var(--mono);font-size:11px;color:var(--graphite);background:none;border:1px solid var(--rule);border-radius:8px;padding:6px 8px;color-scheme:light}
 .datepick:focus-visible{outline:2px solid var(--currant);outline-offset:2px}
 
-/* ── input ────────────────────────────────────────────── */
-.field{margin-top:24px;flex:none}
-.label{
-  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--graphite);display:block;margin-bottom:8px;
-}
-.inputwrap{
-  display:flex;align-items:baseline;gap:10px;
-  border-bottom:2px solid var(--ink);padding-bottom:9px;
-}
-.inputwrap input{
-  flex:1;min-width:0;border:none;background:none;
-  font-family:var(--display);font-weight:500;font-size:42px;
-  letter-spacing:.005em;color:var(--ink);
-}
+.label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite);display:block;margin-bottom:7px}
+
+.field{margin-top:22px;flex:none}
+.inputwrap{display:flex;align-items:flex-end;gap:10px;border-bottom:2px solid var(--ink);padding-bottom:8px}
+.inputwrap input{flex:1;min-width:0;border:none;background:none;font-family:var(--display);font-weight:500;font-size:40px;color:var(--ink)}
 .inputwrap input::placeholder{color:#C2BAA8}
 .inputwrap input:focus{outline:none}
 .cur{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--graphite)}
 
-/* ── signature: payout band ───────────────────────────── */
-.band{
-  margin-top:26px;flex:none;
-  background:var(--currant);color:var(--card);
-  border-radius:4px;padding:18px 20px 20px;
-  position:relative;overflow:hidden;
-}
+.seg{display:flex;gap:6px;flex:none}
+.segbtn{flex:1;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.04em;padding:11px 0;border:1px solid var(--rule);border-radius:7px;background:none;color:var(--graphite);cursor:pointer}
+.segbtn.on{background:var(--ink);border-color:var(--ink);color:var(--card)}
+.segbtn:focus-visible{outline:2px solid var(--currant);outline-offset:2px}
+
+/* красный блок результата */
+.band{margin-top:20px;flex:none;background:var(--currant);color:var(--card);border-radius:4px;padding:16px 20px 17px;position:relative;overflow:hidden}
 .band::before{
   content:"";position:absolute;inset:0 0 auto 0;height:7px;
   background:
-    repeating-linear-gradient(45deg,  rgba(244,241,233,.85) 0 1.5px, transparent 1.5px 7px),
+    repeating-linear-gradient(45deg, rgba(244,241,233,.85) 0 1.5px, transparent 1.5px 7px),
     repeating-linear-gradient(-45deg, rgba(244,241,233,.85) 0 1.5px, transparent 1.5px 7px);
 }
-.band .label{color:rgba(244,241,233,.75);margin:6px 0 4px}
-.amount{
-  font-family:var(--display);font-weight:600;font-size:66px;line-height:.95;
-  letter-spacing:-.01em;font-variant-numeric:tabular-nums;
-}
-.amount.idle{font-size:26px;line-height:1.5;opacity:.8;font-weight:400}
-.bandfoot{
-  display:flex;justify-content:space-between;align-items:baseline;
-  margin-top:12px;padding-top:11px;border-top:1px solid rgba(244,241,233,.3);
-  font-family:var(--mono);font-size:11px;letter-spacing:.03em;
-}
+.bandhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 4px}
+.bandhead .label{color:rgba(244,241,233,.75);margin:0}
+.curseg{display:flex;gap:4px;flex:none}
+.curbtn{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;padding:5px 8px;border:1px solid var(--rule);border-radius:5px;background:none;color:var(--graphite);cursor:pointer}
+.curbtn.on{background:var(--ink);border-color:var(--ink);color:var(--card)}
+.curbtn:disabled{opacity:.35;cursor:default}
+.curbtn:focus-visible{outline:2px solid var(--currant);outline-offset:2px}
+.band .curbtn{border-color:rgba(244,241,233,.45);color:rgba(244,241,233,.85)}
+.band .curbtn.on{background:var(--card);border-color:var(--card);color:var(--currant)}
+.band .curbtn:focus-visible{outline-color:var(--card)}
+
+.amountrow{display:flex;align-items:baseline;gap:8px}
+.amount{font-family:var(--display);font-weight:600;font-size:54px;line-height:.98;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.amount.idle{font-size:23px;line-height:1.45;opacity:.75;font-weight:400}
+.unit{font-family:var(--mono);font-size:12px;font-weight:600;color:rgba(244,241,233,.7)}
+.equiv{font-family:var(--mono);font-size:11px;color:rgba(244,241,233,.8);margin-top:13px;padding-top:11px;border-top:1px solid rgba(244,241,233,.3);min-height:14px}
+.equiv:empty{min-height:0}
+.equiv.bare{margin-top:0;padding-top:0;border-top:none;min-height:0}
+.split{font-family:var(--mono);font-size:11px;color:rgba(244,241,233,.85);margin-top:7px}
+.pot{font-family:var(--mono);font-size:11px;color:rgba(244,241,233,.72);margin-top:7px}
+.warn{display:none;font-family:var(--mono);font-size:10px;line-height:1.4;color:var(--currant);background:var(--card);border-radius:3px;padding:5px 7px;margin-top:9px}
+.warn.on{display:block}
+.bandfoot{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:9px;border-top:1px solid rgba(244,241,233,.3);font-family:var(--mono);font-size:11px;letter-spacing:.03em}
 .bandfoot b{font-weight:600}
 
-/* ── ribbon: один тик = один день ─────────────────────── */
-.ribbon{margin-top:22px;flex:none}
-.ticks{display:flex;align-items:flex-end;gap:4px;height:34px}
-.tick{flex:1;background:var(--ink);opacity:.28;border-radius:1px;height:14px}
-.tick.first{opacity:.85;height:22px}
-.tick.pay{
-  flex:none;width:16px;height:16px;background:var(--currant);opacity:1;
-  transform:rotate(45deg);border-radius:2px;margin:0 3px 3px 5px;
-}
-.ticklab{
-  display:flex;justify-content:space-between;margin-top:9px;
-  font-family:var(--mono);font-size:10px;letter-spacing:.08em;
-  text-transform:uppercase;color:var(--graphite);
-}
-.ticklab b{color:var(--currant);font-weight:600}
+/* календарь: от зарплаты до зарплаты, полосы одной высоты */
+.ribbon{margin-top:18px;flex:none}
+.ticks{display:flex;align-items:stretch;gap:2px;height:26px}
+.tick{flex:1;min-width:0;border-radius:1px;background:var(--ink);opacity:.32}  /* будни */
+.tick.past{opacity:.11}                                                        /* прошедшие */
+.tick.off{opacity:.80}                                                         /* выходные */
+.tick.avans{background:var(--currant-light);opacity:1}
+.tick.pay{background:var(--currant-deep);opacity:1}
+.ticklab{position:relative;height:13px;margin-top:7px;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.03em}
+.ticklab span{position:absolute;top:0;white-space:nowrap}
+.ticklab .a{color:var(--currant-light)}
+.ticklab .p{color:var(--currant-deep)}
 
-/* ── upcoming payouts ─────────────────────────────────── */
-.list{margin-top:auto;padding-top:18px;flex:none}
-.row{
-  display:grid;grid-template-columns:58px 1fr auto;align-items:baseline;gap:10px;
-  padding:11px 0;border-top:1px solid var(--rule);
-}
+/* выплаты */
+.list{margin-top:auto;padding-top:12px;flex:none}
+.row{display:grid;grid-template-columns:58px 1fr auto;align-items:baseline;gap:10px;padding:10px 0;border-top:1px solid var(--rule)}
 .row .d{font-family:var(--display);font-size:19px;font-weight:500;color:var(--ink)}
 .row .t{font-size:13px;font-weight:500;color:var(--ink)}
 .row .t small{display:block;font-family:var(--mono);font-size:9.5px;color:var(--currant);letter-spacing:.04em;margin-top:2px}
-.row .w{font-family:var(--mono);font-size:11px;color:var(--graphite);text-transform:uppercase}
+.row .s{font-family:var(--mono);font-size:11px;color:var(--graphite);text-transform:uppercase;text-align:right}
+.row .s em{display:block;font-style:normal;color:var(--ink);font-weight:600;margin-bottom:2px}
 
-.note{
-  margin-top:14px;font-size:10.5px;line-height:1.5;color:var(--graphite);
-  border-left:2px solid var(--rule);padding-left:9px;
+/* курс */
+.rate{margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--graphite);display:flex;justify-content:space-between;align-items:center;gap:8px;flex:none}
+.rate a{color:var(--graphite);text-decoration:none;border-bottom:1px solid var(--rule)}
+.rate button{font:inherit;color:var(--currant);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;flex:none}
+.rate input{
+  font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink);
+  width:62px;border:none;border-bottom:1.5px solid var(--currant);background:none;
+  padding:1px 2px;text-align:center;
 }
-
-@media (prefers-reduced-motion:no-preference){
-  .amount,.tick{transition:opacity .18s ease, height .18s ease}
-}
+.rate input:focus{outline:none;background:rgba(198,18,46,.07)}
 </style>
 </head>
 <body>
 <div class="phone">
   <div class="screen">
-    <div class="ornament"></div>
 
-    <div class="head">
-      <div>
-        <span class="eyebrow">Сегодня</span>
-        <div class="today" id="todayLabel">—</div>
-      </div>
+    <div class="brand">
+      <div class="mark"><i></i><span>Лимиты</span></div>
       <input type="date" class="datepick" id="dateInput" aria-label="Дата отсчёта">
     </div>
 
@@ -185,30 +142,52 @@ body{
       <label class="label" for="money">Осталось денег</label>
       <div class="inputwrap">
         <input id="money" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off">
-        <span class="cur">BYN</span>
+        <div class="curseg" id="curIn" role="group" aria-label="Валюта ввода">
+          <button type="button" class="curbtn on" data-cur="BYN">BYN</button>
+          <button type="button" class="curbtn" data-cur="USD" disabled>USD</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="label">Выходной дороже будня</span>
+      <div class="seg" id="seg" role="group" aria-label="Выходной дороже будня">
+        <button type="button" class="segbtn" data-k="1">поровну</button>
+        <button type="button" class="segbtn on" data-k="1.5">×1,5</button>
+        <button type="button" class="segbtn" data-k="2">×2</button>
       </div>
     </div>
 
     <div class="band">
-      <span class="label">Можно тратить в день</span>
-      <div class="amount idle" id="perDay">Введите сумму</div>
+      <div class="bandhead">
+        <span class="label" id="bandLabel">На сегодня</span>
+        <div class="curseg" id="curOut" role="group" aria-label="Валюта вывода">
+          <button type="button" class="curbtn on" data-cur="BYN">BYN</button>
+          <button type="button" class="curbtn" data-cur="USD" disabled>USD</button>
+        </div>
+      </div>
+      <div class="amountrow">
+        <span class="amount idle" id="perDay">Нет данных</span>
+        <span class="unit" id="unitLabel"></span>
+      </div>
+      <div class="equiv" id="equivLine"></div>
+      <div class="split" id="splitLine"></div>
+      <div class="pot" id="potLine"></div>
+      <div class="warn" id="warnLine"></div>
       <div class="bandfoot">
-        <span id="untilLabel">до ближайшей выплаты</span>
+        <span id="untilLabel"></span>
         <span id="daysLabel"></span>
       </div>
     </div>
 
     <div class="ribbon">
       <div class="ticks" id="ticks"></div>
-      <div class="ticklab">
-        <span>Сегодня</span>
-        <b id="payTag">—</b>
-      </div>
+      <div class="ticklab" id="tickLabels"></div>
     </div>
 
     <div class="list" id="list"></div>
 
-    <p class="note">10-е и 24-е числа. Если выпадает на выходной или праздник по календарю РБ — выплата в предыдущий рабочий день. Переносы рабочих дней постановлениями Совмина не учитываются.</p>
+    <div class="rate" id="rateLine"><span>Курс НБ РБ загружается…</span></div>
   </div>
 </div>
 
@@ -216,139 +195,292 @@ body{
 (function(){
   'use strict';
 
-  /* ── календарь РБ ─────────────────────────────────── */
-  var FIXED = [[1,1],[1,2],[1,7],[3,8],[5,1],[5,9],[7,3],[11,7],[12,25]];
+  var AVANS = 300;                 // аванс — фиксированная сумма, BYN
 
-  function addDays(d,n){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()+n); }
-  function midnight(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
-  function diffDays(a,b){
-    return Math.round((Date.UTC(b.getFullYear(),b.getMonth(),b.getDate())
-                     - Date.UTC(a.getFullYear(),a.getMonth(),a.getDate()))/86400000);
-  }
+  var FIXED=[[1,1],[1,2],[1,7],[3,8],[5,1],[5,9],[7,3],[11,7],[12,25]];
+  function addDays(d,n){return new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);}
+  function midnight(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+  function diffDays(a,b){return Math.round((Date.UTC(b.getFullYear(),b.getMonth(),b.getDate())-Date.UTC(a.getFullYear(),a.getMonth(),a.getDate()))/86400000);}
+  function orthodoxEaster(y){var a=y%4,b=y%7,c=y%19,d=(19*c+15)%30,e=(2*a+4*b-d+34)%7,m=Math.floor((d+e+114)/31),day=((d+e+114)%31)+1;return new Date(y,m-1,day+13);}
+  function radunitsa(y){return addDays(orthodoxEaster(y),9);}
+  function isHoliday(d){var m=d.getMonth()+1,day=d.getDate();for(var i=0;i<FIXED.length;i++)if(FIXED[i][0]===m&&FIXED[i][1]===day)return true;var r=radunitsa(d.getFullYear());return r.getMonth()===d.getMonth()&&r.getDate()===d.getDate();}
+  function isDayOff(d){var w=d.getDay();return w===0||w===6||isHoliday(d);}
+  function shiftBack(d){var x=d,g=0;while(isDayOff(x)&&g++<20)x=addDays(x,-1);return x;}
 
-  // православная Пасха (юлианский расчёт → григорианская дата)
-  function orthodoxEaster(y){
-    var a=y%4, b=y%7, c=y%19;
-    var d=(19*c+15)%30;
-    var e=(2*a+4*b-d+34)%7;
-    var m=Math.floor((d+e+114)/31);
-    var day=((d+e+114)%31)+1;
-    return new Date(y, m-1, day+13);
-  }
-  function radunitsa(y){ return addDays(orthodoxEaster(y), 9); }
-
-  function isHoliday(d){
-    var m=d.getMonth()+1, day=d.getDate();
-    for(var i=0;i<FIXED.length;i++) if(FIXED[i][0]===m && FIXED[i][1]===day) return true;
-    var r=radunitsa(d.getFullYear());
-    return r.getMonth()===d.getMonth() && r.getDate()===d.getDate();
-  }
-  function isDayOff(d){ var w=d.getDay(); return w===0||w===6||isHoliday(d); }
-  function shiftBack(d){ var x=d; var g=0; while(isDayOff(x) && g++<20) x=addDays(x,-1); return x; }
-
-  /* ── выплаты ──────────────────────────────────────── */
-  var KINDS=[[10,'Зарплата'],[24,'Аванс']];
-  function payouts(from, count){
-    var res=[], y=from.getFullYear(), mo=from.getMonth();
-    for(var k=-1;k<=5;k++){
-      for(var i=0;i<KINDS.length;i++){
-        var nominal=new Date(y, mo+k, KINDS[i][0]);
-        var actual=shiftBack(nominal);
-        if(diffDays(from, actual) > 0) res.push({nominal:nominal, actual:actual, kind:KINDS[i][1]});
-      }
+  // все выплаты после указанной даты, по возрастанию
+  function payouts(from,count){
+    var res=[],y=from.getFullYear(),mo=from.getMonth();
+    var kinds=[[10,'Зарплата'],[24,'Аванс']];
+    for(var k=-1;k<=6;k++)for(var i=0;i<kinds.length;i++){
+      var nominal=new Date(y,mo+k,kinds[i][0]),actual=shiftBack(nominal);
+      if(diffDays(from,actual)>0)res.push({nominal:nominal,actual:actual,kind:kinds[i][1]});
     }
     res.sort(function(a,b){return a.actual-b.actual;});
     return res.slice(0,count);
   }
 
-  /* ── форматирование ───────────────────────────────── */
-  var MON=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-  var WD =['вс','пн','вт','ср','чт','пт','сб'];
-  var nf = new Intl.NumberFormat('ru-RU',{minimumFractionDigits:2, maximumFractionDigits:2});
-  function pad(n){ return (n<10?'0':'')+n; }
-  function plural(n,a,b,c){
-    var n10=n%10, n100=n%100;
-    if(n10===1 && n100!==11) return a;
-    if(n10>=2 && n10<=4 && (n100<10||n100>=20)) return b;
-    return c;
+  // последняя зарплата не позже указанной даты — начало календарного цикла
+  function prevSalary(base){
+    var y=base.getFullYear(),mo=base.getMonth(),best=null;
+    for(var k=-2;k<=1;k++){
+      var act=shiftBack(new Date(y,mo+k,10));
+      if(diffDays(act,base)>=0 && (!best||act>best)) best=act;
+    }
+    return best;
+  }
+  // авансы строго между двумя датами
+  function avansBetween(from,to){
+    var y=from.getFullYear(),mo=from.getMonth(),res=[];
+    for(var k=-1;k<=2;k++){
+      var act=shiftBack(new Date(y,mo+k,24));
+      if(diffDays(from,act)>0 && diffDays(act,to)>0) res.push(act);
+    }
+    return res;
   }
 
-  /* ── элементы ─────────────────────────────────────── */
-  var elDate=document.getElementById('dateInput'),
-      elToday=document.getElementById('todayLabel'),
-      elMoney=document.getElementById('money'),
-      elPerDay=document.getElementById('perDay'),
-      elUntil=document.getElementById('untilLabel'),
-      elDays=document.getElementById('daysLabel'),
-      elTicks=document.getElementById('ticks'),
-      elPayTag=document.getElementById('payTag'),
-      elList=document.getElementById('list');
+  var MON=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  var WD=['вс','пн','вт','ср','чт','пт','сб'];
+  var nf=new Intl.NumberFormat('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
+  var nf4=new Intl.NumberFormat('ru-RU',{minimumFractionDigits:4,maximumFractionDigits:4});
+  function pad(n){return (n<10?'0':'')+n;}
+  function plural(n,a,b,c){var x=n%10,y=n%100;if(x===1&&y!==11)return a;if(x>=2&&x<=4&&(y<10||y>=20))return b;return c;}
+
+  var $=function(id){return document.getElementById(id);};
+  var elDate=$('dateInput'),elMoney=$('money'),elPerDay=$('perDay'),elUnit=$('unitLabel'),
+      elEquiv=$('equivLine'),elBandLabel=$('bandLabel'),elSplit=$('splitLine'),elPot=$('potLine'),
+      elWarn=$('warnLine'),elUntil=$('untilLabel'),elDays=$('daysLabel'),elTicks=$('ticks'),
+      elTickLabels=$('tickLabels'),elSeg=$('seg'),elCurIn=$('curIn'),elCurOut=$('curOut'),
+      elList=$('list'),elRate=$('rateLine');
 
   var today=midnight(new Date());
-  elDate.value = today.getFullYear()+'-'+pad(today.getMonth()+1)+'-'+pad(today.getDate());
+  elDate.value=today.getFullYear()+'-'+pad(today.getMonth()+1)+'-'+pad(today.getDate());
+
+  var weekendK=1.5;
+  var inCur='BYN';        // валюта, в которой вводят остаток
+  var outCur='BYN';       // валюта, в которой показывают лимит
+  var usdRate=null;       // BYN за 1 USD
+  var rateDate=null;
+  var rateManual=false;
 
   function parseMoney(s){
-    var v = String(s).replace(/\s|\u00A0/g,'').replace(',','.').replace(/[^\d.]/g,'');
-    var n = parseFloat(v);
-    return isFinite(n) && n>=0 ? n : null;
+    var v=String(s).replace(/[\s\u00A0]/g,'').replace(',','.').replace(/[^\d.]/g,'');
+    var n=parseFloat(v);
+    return isFinite(n)&&n>=0?n:null;
+  }
+
+  function pick(seg,cur){
+    Array.prototype.forEach.call(seg.children,function(x){x.classList.toggle('on',x.dataset.cur===cur);});
+  }
+
+  function usdOn(on){
+    [elCurIn,elCurOut].forEach(function(seg){
+      seg.querySelector('[data-cur="USD"]').disabled=!on;
+    });
+    if(!on){
+      if(inCur==='USD'){ inCur='BYN'; pick(elCurIn,'BYN'); }
+      if(outCur==='USD'){ outCur='BYN'; pick(elCurOut,'BYN'); }
+    }
+  }
+
+  function rateOk(){
+    usdOn(true);
+    elRate.innerHTML=
+      '<span>'+(rateManual?'Курс вручную':'Курс НБ РБ')+' · 1 USD = '+nf4.format(usdRate)+' BYN'+
+      (rateDate?' · '+pad(rateDate.getDate())+'.'+pad(rateDate.getMonth()+1):'')+'</span>'+
+      '<button type="button" id="rateEdit">'+(rateManual?'обновить':'изменить')+'</button>';
+    $('rateEdit').addEventListener('click', rateManual ? loadRate : rateForm);
+    render();
+  }
+
+  function rateForm(msg){
+    usdOn(!!usdRate);
+    elRate.innerHTML=
+      '<span>'+(msg||'Курс вручную')+' · 1 USD = <input id="rateInput" type="text" inputmode="decimal" '+
+      'placeholder="0,0000" value="'+(usdRate?nf4.format(usdRate):'')+'" aria-label="Курс доллара"> BYN</span>'+
+      '<button type="button" id="rateRetry">загрузить</button>';
+    var inp=$('rateInput');
+    inp.addEventListener('input',function(){
+      var v=parseMoney(inp.value);
+      if(v&&v>0){ usdRate=v; rateManual=true; rateDate=null; usdOn(true); }
+      else usdOn(false);
+      render();
+    });
+    $('rateRetry').addEventListener('click',loadRate);
+    inp.focus();
+  }
+
+  /* официальный курс НБ РБ — тот же, что публикует myfin.by */
+  function loadRate(){
+    elRate.innerHTML='<span>Курс НБ РБ загружается…</span>';
+    fetch('https://api.nbrb.by/exrates/rates/USD?parammode=2',{cache:'no-store'})
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(d){
+        usdRate=d.Cur_OfficialRate/(d.Cur_Scale||1);
+        rateDate=new Date(d.Date);
+        rateManual=false;
+        rateOk();
+      })
+      .catch(function(){
+        rateForm('Курс не загрузился — впишите');
+        render();
+      });
   }
 
   function render(){
     var parts=elDate.value.split('-');
-    var base = parts.length===3 ? new Date(+parts[0], +parts[1]-1, +parts[2]) : today;
-    if(isNaN(base)) base = today;
+    var base=parts.length===3?new Date(+parts[0],+parts[1]-1,+parts[2]):today;
+    if(isNaN(base)) base=today;
 
-    elToday.textContent = base.getDate()+' '+MON[base.getMonth()];
+    var next=payouts(base,6);
 
-    var next = payouts(base, 4);
-    var p = next[0];
-    var days = diffDays(base, p.actual);          // сегодня входит в период
-    var money = parseMoney(elMoney.value);
+    // период считаем до ближайшей ЗАРПЛАТЫ: аванс — известные 300, он пополняет остаток
+    var salary=null;
+    for(var s=0;s<next.length;s++) if(next[s].kind==='Зарплата'){ salary=next[s]; break; }
+    var days=diffDays(base,salary.actual);
 
-    // главное число
-    if(money===null || money===0){
+    // авансы, попадающие внутрь периода
+    var avansDays=[];
+    for(var v=0;v<next.length;v++){
+      if(next[v].kind==='Аванс' && next[v].actual<salary.actual) avansDays.push(diffDays(base,next[v].actual));
+    }
+    var avansTotal=avansDays.length*AVANS;
+
+    // раскладка дней
+    var kinds=[],nOff=0,nWork=0;
+    for(var i=0;i<days;i++){
+      var off=isDayOff(addDays(base,i));
+      kinds.push(off); off?nOff++:nWork++;
+    }
+
+    var typed=parseMoney(elMoney.value);
+    var money = typed===null ? null
+              : (inCur==='USD'&&usdRate ? typed*usdRate : typed);   // всё считаем в BYN
+    var todayOff=kinds[0];
+    elBandLabel.textContent='На сегодня · '+(todayOff?'выходной':'будний день');
+
+    elWarn.classList.remove('on');
+
+    if(money===null){
       elPerDay.classList.add('idle');
-      elPerDay.textContent = money===0 ? 'Денег нет' : 'Введите сумму';
+      elPerDay.textContent='Нет данных';
+      elUnit.textContent=''; elEquiv.textContent=''; elSplit.textContent=''; elPot.textContent='';
+      elEquiv.className='equiv bare';
     } else {
+      var pot=money+avansTotal;
+      var unit=pot/(nWork+weekendK*nOff);
+      var workSum=unit,offSum=unit*weekendK;
+      var mine=todayOff?offSum:workSum;
+
       elPerDay.classList.remove('idle');
-      elPerDay.textContent = nf.format(money/days);
+      elEquiv.className='equiv';
+      var shown=(outCur==='USD'&&usdRate)?mine/usdRate:mine;
+      elPerDay.textContent=nf.format(shown);
+      elUnit.textContent=outCur;
+
+      if(usdRate){
+        elEquiv.textContent = outCur==='USD'
+          ? '≈ '+nf.format(mine)+' BYN в день'
+          : '≈ '+nf.format(mine/usdRate)+' USD в день';
+      } else elEquiv.textContent='';
+
+      if(weekendK===1)   elSplit.textContent='все дни поровну · '+days+' × '+nf.format(unit);
+      else if(nOff===0)  elSplit.textContent='впереди только будни';
+      else if(nWork===0) elSplit.textContent='впереди только выходные';
+      else elSplit.textContent='будни '+nf.format(workSum)+' × '+nWork+'  ·  выходные '+nf.format(offSum)+' × '+nOff;
+
+      elPot.textContent = avansTotal
+        ? nf.format(money)+' + аванс '+nf.format(avansTotal)+' = '+nf.format(pot)+' BYN'
+        : nf.format(money)+' BYN до зарплаты';
+
+      // хватит ли денег дожить до аванса
+      if(avansDays.length){
+        var idx=avansDays[0],need=0;
+        for(var q=0;q<idx;q++) need+=kinds[q]?offSum:workSum;
+        if(need>money+0.005){
+          elWarn.textContent='До аванса нужно '+nf.format(need)+' BYN, а на руках '+nf.format(money)+
+                             '. Первые '+idx+' '+plural(idx,'день','дня','дней')+' придётся ужаться.';
+          elWarn.classList.add('on');
+        }
+      }
     }
 
-    elUntil.innerHTML = 'до ' + pad(p.actual.getDate())+'.'+pad(p.actual.getMonth()+1) +
-                        ' · <b>'+p.kind.toLowerCase()+'</b>';
-    elDays.textContent = days+' '+plural(days,'день','дня','дней');
+    elUntil.innerHTML='до '+pad(salary.actual.getDate())+'.'+pad(salary.actual.getMonth()+1)+' · <b>зарплата</b>';
+    elDays.textContent=days+' '+plural(days,'день','дня','дней');
 
-    // лента дней
+    // календарь: от прошлой зарплаты до следующей, включая обе
+    var cycleStart=prevSalary(base);
+    var cycleAvans=avansBetween(cycleStart,salary.actual);
+    var total=diffDays(cycleStart,salary.actual)+1;
+
     elTicks.innerHTML='';
-    var shown = Math.min(days, 24);
-    for(var i=0;i<shown;i++){
-      var t=document.createElement('div');
-      t.className='tick'+(i===0?' first':'');
-      elTicks.appendChild(t);
-    }
-    var pay=document.createElement('div');
-    pay.className='tick pay';
-    elTicks.appendChild(pay);
-    elPayTag.textContent = p.kind+' '+pad(p.actual.getDate())+'.'+pad(p.actual.getMonth()+1);
+    elTickLabels.innerHTML='';
+    var marks=[];
+    for(var t=0;t<total;t++){
+      var day=addDays(cycleStart,t);
+      var cls='tick', isAvans=false;
+      for(var c=0;c<cycleAvans.length;c++) if(diffDays(cycleAvans[c],day)===0) isAvans=true;
 
-    // ближайшие выплаты
+      if(t===0||t===total-1){ cls+=' pay'; marks.push({i:t,d:day,type:'p'}); }
+      else if(isAvans){      cls+=' avans'; marks.push({i:t,d:day,type:'a'}); }
+      else if(diffDays(day,base)>0) cls+=' past';
+      else if(isDayOff(day)) cls+=' off';
+
+      var el=document.createElement('div');
+      el.className=cls;
+      el.title=pad(day.getDate())+'.'+pad(day.getMonth()+1)+' '+WD[day.getDay()];
+      elTicks.appendChild(el);
+    }
+
+    for(var mk=0;mk<marks.length;mk++){
+      var m=marks[mk],lab=document.createElement('span');
+      lab.className=m.type;
+      lab.textContent=pad(m.d.getDate())+'.'+pad(m.d.getMonth()+1);
+      var pct=(m.i+0.5)/total*100;
+      if(m.i===0){ lab.style.left='0'; }
+      else if(m.i===total-1){ lab.style.right='0'; }
+      else { lab.style.left=pct.toFixed(2)+'%'; lab.style.transform='translateX(-50%)'; }
+      elTickLabels.appendChild(lab);
+    }
+
     elList.innerHTML='';
     for(var j=0;j<3;j++){
-      var q=next[j];
-      var moved = diffDays(q.nominal, q.actual) !== 0;
-      var row=document.createElement('div');
-      row.className='row';
-      row.innerHTML =
-        '<span class="d">'+pad(q.actual.getDate())+'.'+pad(q.actual.getMonth()+1)+'</span>'+
-        '<span class="t">'+q.kind+ (moved ? '<small>перенос с '+pad(q.nominal.getDate())+'.'+pad(q.nominal.getMonth()+1)+'</small>' : '') +'</span>'+
-        '<span class="w">'+WD[q.actual.getDay()]+'</span>';
+      var p=next[j],moved=diffDays(p.nominal,p.actual)!==0;
+      var row=document.createElement('div'); row.className='row';
+      row.innerHTML=
+        '<span class="d">'+pad(p.actual.getDate())+'.'+pad(p.actual.getMonth()+1)+'</span>'+
+        '<span class="t">'+p.kind+(moved?'<small>перенос с '+pad(p.nominal.getDate())+'.'+pad(p.nominal.getMonth()+1)+'</small>':'')+'</span>'+
+        '<span class="s">'+(p.kind==='Аванс'?'<em>'+nf.format(AVANS)+'</em>':'')+WD[p.actual.getDay()]+'</span>';
       elList.appendChild(row);
     }
   }
 
-  elMoney.addEventListener('input', render);
-  elDate.addEventListener('change', render);
+  elSeg.addEventListener('click',function(e){
+    var b=e.target.closest('.segbtn'); if(!b) return;
+    weekendK=parseFloat(b.dataset.k);
+    Array.prototype.forEach.call(elSeg.children,function(x){x.classList.toggle('on',x===b);});
+    render();
+  });
+  elCurIn.addEventListener('click',function(e){
+    var b=e.target.closest('.curbtn'); if(!b||b.disabled||b.dataset.cur===inCur) return;
+    var v=parseMoney(elMoney.value);
+    if(v!==null&&usdRate){                       // сумма та же, меняется единица счёта
+      elMoney.value=nf.format(b.dataset.cur==='USD' ? v/usdRate : v*usdRate);
+    }
+    inCur=b.dataset.cur;
+    pick(elCurIn,inCur);
+    render();
+  });
+  elCurOut.addEventListener('click',function(e){
+    var b=e.target.closest('.curbtn'); if(!b||b.disabled||b.dataset.cur===outCur) return;
+    outCur=b.dataset.cur;
+    pick(elCurOut,outCur);
+    render();
+  });
+  elMoney.addEventListener('input',render);
+  elDate.addEventListener('change',render);
+
   render();
+  loadRate();
 })();
 </script>
 </body>
